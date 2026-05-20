@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROUNDWORK — Know the world. Change it.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: #2a2a2a;
+    --border2: #333;
+    --text: #f0ede6;
+    --muted: #6b6b6b;
+    --muted2: #9a9a9a;
+    --accent: #e8ff47;
+    --accent2: #ff4747;
+    --accent3: #47b8ff;
+    --green: #47ff8a;
+    --orange: #ff8c47;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCREENS */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── AUTH SCREENS ── */
+  .auth-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+  }
+  .auth-left {
+    flex: 1;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 48px;
+  }
+  .auth-left .wordmark {
+    font-family: var(--font-display);
+    font-size: 64px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .auth-left .tagline {
+    font-size: 13px;
+    color: var(--muted2);
+    font-family: var(--font-mono);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .auth-left-middle {
+    padding: 40px 0;
+  }
+  .auth-left-middle h2 {
+    font-family: var(--font-display);
+    font-size: 52px;
+    line-height: 1;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .auth-left-middle h2 span { color: var(--accent); }
+  .auth-pillars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .pillar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--muted2);
+    font-family: var(--font-mono);
+  }
+  .pillar-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .auth-footer-note {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+
+  .auth-right {
+    width: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 40px;
+    background: var(--bg);
+  }
+  .auth-form-box {
+    width: 100%;
+  }
+  .auth-form-box h3 {
+    font-family: var(--font-display);
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .auth-form-box p {
+    font-size: 13px;
+    color: var(--muted2);
+    margin-bottom: 32px;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted2);
+    margin-bottom: 6px;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: var(--accent);
+  }
+  .form-group textarea { min-height: 90px; resize: vertical; }
+  .btn-primary {
+    width: 100%;
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: 2px;
+    padding: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    margin-top: 8px;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--muted2);
+  }
+  .auth-switch a {
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .auth-switch a:hover { text-decoration: underline; }
+  .auth-error {
+    background: rgba(255,71,71,0.1);
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: var(--font-mono);
+    margin-bottom: 16px;
+    display: none;
+  }
+  .auth-error.show { display: block; }
+
+  /* ── MAIN APP ── */
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .sidebar-logo {
+    font-family: var(--font-display);
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+    line-height: 1;
+  }
+  .sidebar-logo span {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .sidebar-nav {
+    padding: 20px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--muted2);
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); border-color: var(--border); }
+  .nav-item.active { background: var(--bg3); color: var(--accent); border-color: var(--accent); }
+  .nav-icon { font-size: 18px; width: 20px; text-align: center; }
+  .sidebar-user {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .user-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0a0a0a;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+  .user-info { flex: 1; overflow: hidden; }
+  .user-name { font-size: 13px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-handle { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+
+  /* MAIN CONTENT */
+  .main-content {
+    margin-left: 240px;
+    flex: 1;
+    display: flex;
+    gap: 0;
+  }
+  .feed-col {
+    flex: 1;
+    max-width: 680px;
+    border-right: 1px solid var(--border);
+    min-height: 100vh;
+  }
+  .feed-header {
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .feed-header h1 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .feed-tabs {
+    display: flex;
+    gap: 8px;
+  }
+  .feed-tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    background: transparent;
+    transition: all 0.15s;
+  }
+  .feed-tab:hover { color: var(--text); border-color: var(--muted2); }
+  .feed-tab.active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+  .tag-filter {
+    display: flex;
+    gap: 8px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tag-filter::-webkit-scrollbar { display: none; }
+  .tag-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    background: transparent;
+    transition: all 0.15s;
+  }
+  .tag-pill:hover { color: var(--text); border-color: var(--muted2); }
+  .tag-pill.active { color: #0a0a0a; border-color: transparent; }
+
+  /* POST CARD */
+  .post-card {
+    border-bottom: 1px solid var(--border);
+    padding: 24px;
+    transition: background 0.15s;
+    animation: fadeUp 0.35s ease both;
+  }
+  .post-card:hover { background: rgba(255,255,255,0.015); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .post-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .post-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .post-meta { flex: 1; }
+  .post-author-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .post-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .post-name:hover { color: var(--accent); }
+  .post-handle {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+  .post-time {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    margin-left: auto;
+  }
+  .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(232,255,71,0.1);
+    border: 1px solid rgba(232,255,71,0.3);
+    color: var(--accent);
+    font-size: 9px;
+    font-family: var(--font-mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .post-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+  .post-body {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.65;
+    margin-bottom: 14px;
+  }
+  .post-image {
+    width: 100%;
+    border-radius: 8px;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-family: var(--font-display);
+    font-size: 48px;
+    letter-spacing: 4px;
+    border: 1px solid var(--border2);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .post-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.7) 100%);
+  }
+  .post-image-label {
+    position: relative;
+    z-index: 2;
+    color: rgba(255,255,255,0.9);
+  }
+  .post-video {
+    width: 100%;
+    border-radius: 8px;
+    aspect-ratio: 16/9;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .post-video:hover { border-color: var(--accent); }
+  .video-play {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: rgba(232,255,71,0.15);
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    color: var(--accent);
+    transition: background 0.15s, transform 0.15s;
+  }
+  .post-video:hover .video-play { background: var(--accent); color: #0a0a0a; transform: scale(1.05); }
+  .video-duration {
+    position: absolute;
+    bottom: 12px; right: 12px;
+    background: rgba(0,0,0,0.8);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .source-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--muted2);
+  }
+  .source-icon { color: var(--accent3); font-size: 14px; }
+  .source-link {
+    color: var(--accent3);
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: none;
+  }
+  .source-link:hover { text-decoration: underline; }
+
+  /* FACT CHECK */
+  .fact-check-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .fact-check-bar:hover { opacity: 0.8; }
+  .fact-check-bar.verified { background: rgba(71,255,138,0.08); border: 1px solid rgba(71,255,138,0.25); color: var(--green); }
+  .fact-check-bar.partial  { background: rgba(255,140,71,0.08); border: 1px solid rgba(255,140,71,0.25); color: var(--orange); }
+  .fact-check-bar.disputed { background: rgba(255,71,71,0.08);  border: 1px solid rgba(255,71,71,0.25);  color: var(--accent2); }
+  .fact-check-bar.pending  { background: rgba(71,184,255,0.08); border: 1px solid rgba(71,184,255,0.25); color: var(--accent3); }
+  .fact-check-icon { font-size: 16px; }
+  .fact-check-note { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+  /* ACTION BANNER */
+  .action-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(71,184,255,0.06);
+    border: 1px solid rgba(71,184,255,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .action-banner:hover { background: rgba(71,184,255,0.1); border-color: rgba(71,184,255,0.4); }
+  .action-banner.donate { background: rgba(71,255,138,0.06); border-color: rgba(71,255,138,0.2); }
+  .action-banner.donate:hover { background: rgba(71,255,138,0.1); border-color: rgba(71,255,138,0.4); }
+  .action-text { font-size: 13px; font-family: var(--font-mono); }
+  .action-text strong { display: block; color: var(--text); margin-bottom: 2px; font-size: 13px; }
+  .action-text span { color: var(--muted2); font-size: 11px; letter-spacing: 0.5px; }
+  .action-btn {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+  .action-btn:hover { opacity: 0.85; }
+  .action-banner.donate .action-btn { background: var(--green); }
+
+  /* POST ACTIONS */
+  .post-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .action-btn-sm {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted2);
+    font-size: 13px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .action-btn-sm:hover { background: var(--bg3); border-color: var(--border2); color: var(--text); }
+  .action-btn-sm.liked { color: var(--accent2); }
+  .action-btn-sm.liked:hover { background: rgba(255,71,71,0.08); border-color: rgba(255,71,71,0.2); }
+  .action-btn-sm svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .action-divider { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+  .share-btn-sm {
+    margin-left: auto;
+  }
+
+  /* COMMENTS */
+  .comments-section {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 8px;
+  }
+  .comment-input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .comment-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 9px 12px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .comment-input:focus { border-color: var(--accent); }
+  .comment-send {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .comment-send:hover { opacity: 0.85; }
+  .comment {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    animation: fadeUp 0.2s ease both;
+  }
+  .comment-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+    color: var(--muted2);
+  }
+  .comment-body { flex: 1; }
+  .comment-author {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .comment-author span { color: var(--muted); font-weight: 400; margin-left: 6px; font-family: var(--font-mono); font-size: 11px; }
+  .comment-text { font-size: 13px; color: var(--muted2); line-height: 1.5; }
+
+  /* SIDEBAR RIGHT */
+  .sidebar-right {
+    width: 300px;
+    padding: 24px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .widget-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .widget-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .trending-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .trending-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .trending-item:first-child { padding-top: 0; }
+  .trending-item:hover { opacity: 0.8; }
+  .trending-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .trending-label {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 3px;
+    line-height: 1.4;
+  }
+  .trending-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .bias-meter {
+    margin-top: 8px;
+  }
+  .bias-track {
+    position: relative;
+    height: 6px;
+    background: linear-gradient(90deg, #4488ff 0%, #b3b3b3 50%, #ff4447 100%);
+    border-radius: 3px;
+    margin-bottom: 6px;
+  }
+  .bias-needle {
+    position: absolute;
+    top: -4px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #0a0a0a;
+    transform: translateX(-50%);
+    transition: left 0.3s;
+  }
+  .bias-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(232,255,71,0.08);
+    border: 1px solid rgba(232,255,71,0.2);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+
+  /* POST COMPOSER */
+  .composer-wrap {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    background: var(--bg2);
+  }
+  .composer-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .composer-tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    background: transparent;
+    transition: all 0.15s;
+  }
+  .composer-tab.active { background: var(--bg3); color: var(--accent); border-color: var(--accent); }
+  .composer-inner {
+    display: flex;
+    gap: 10px;
+  }
+  .composer-right { flex: 1; }
+  .composer-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    resize: none;
+    outline: none;
+    min-height: 60px;
+    line-height: 1.6;
+  }
+  .composer-input::placeholder { color: var(--muted); }
+  .composer-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .composer-source {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 7px 10px;
+    border-radius: 4px;
+    outline: none;
+    min-width: 160px;
+  }
+  .composer-source:focus { border-color: var(--accent); }
+  .post-btn {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 2px;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .post-btn:hover { opacity: 0.85; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 32px;
+    width: 90%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(20px);
+    transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .modal-close {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.15s;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--muted2); }
+
+  /* FACT CHECK MODAL */
+  .fc-result {
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  .fc-result.verified { background: rgba(71,255,138,0.08); border: 1px solid rgba(71,255,138,0.2); }
+  .fc-result.disputed { background: rgba(255,71,71,0.08); border: 1px solid rgba(255,71,71,0.2); }
+  .fc-result.partial  { background: rgba(255,140,71,0.08); border: 1px solid rgba(255,140,71,0.2); }
+  .fc-result.pending  { background: rgba(71,184,255,0.08); border: 1px solid rgba(71,184,255,0.2); }
+  .fc-status {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .fc-result.verified .fc-status { color: var(--green); }
+  .fc-result.disputed .fc-status { color: var(--accent2); }
+  .fc-result.partial  .fc-status { color: var(--orange); }
+  .fc-result.pending  .fc-status { color: var(--accent3); }
+  .fc-note {
+    font-size: 14px;
+    color: var(--muted2);
+    line-height: 1.6;
+  }
+  .fc-sources { margin-top: 12px; }
+  .fc-source-item {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent3);
+    margin-bottom: 4px;
+    cursor: pointer;
+  }
+  .fc-source-item:hover { text-decoration: underline; }
+  .fc-analyze-btn {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .fc-analyze-btn:hover { background: var(--bg); color: var(--text); border-color: var(--accent); }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* SHARE MODAL */
+  .share-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .share-option {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .share-option:hover { border-color: var(--accent); background: rgba(232,255,71,0.05); }
+  .share-option-icon { font-size: 22px; margin-bottom: 6px; }
+  .share-option-label { font-size: 11px; font-family: var(--font-mono); color: var(--muted2); letter-spacing: 1px; text-transform: uppercase; }
+  .share-link-row {
+    display: flex;
+    gap: 8px;
+  }
+  .share-link-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    outline: none;
+  }
+  .copy-btn {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    z-index: 9000;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.error   { border-color: var(--accent2); color: var(--accent2); }
+
+  /* PROFILE PAGE */
+  .profile-header-banner {
+    height: 140px;
+    background: linear-gradient(135deg, #111 0%, #1a2a1a 100%);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .profile-avatar-lg {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0a0a0a;
+    font-family: var(--font-display);
+    font-size: 30px;
+    letter-spacing: 1px;
+    display: flex; align-items: center; justify-content: center;
+    border: 3px solid var(--bg);
+    position: absolute;
+    bottom: -40px;
+    left: 24px;
+  }
+  .profile-info {
+    padding: 52px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .profile-name {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .profile-handle {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .profile-bio {
+    font-size: 14px;
+    color: var(--muted2);
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .profile-stats {
+    display: flex;
+    gap: 24px;
+  }
+  .profile-stat {
+    text-align: center;
+  }
+  .profile-stat-num {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .profile-stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* EXPLORE */
+  .explore-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  .explore-card {
+    background: var(--bg);
+    aspect-ratio: 1;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: opacity 0.15s;
+  }
+  .explore-card:hover { opacity: 0.85; }
+  .explore-card-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 16px;
+  }
+  .explore-label {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.95);
+    line-height: 1.1;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  }
+  .explore-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+
+  /* MISC */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  .empty-state .big { font-family: var(--font-display); font-size: 48px; color: var(--border2); letter-spacing: 3px; margin-bottom: 12px; }
+
+  .like-count-anim { transition: transform 0.15s; }
+  .like-count-anim.bump { animation: bump 0.25s ease; }
+  @keyframes bump { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+
+  .fc-loading { display: none; text-align: center; padding: 20px 0; color: var(--muted2); font-family: var(--font-mono); font-size: 13px; }
+  .fc-loading.show { display: block; }
+
+  @media (max-width: 900px) {
+    .sidebar-right { display: none; }
+    .auth-left { display: none; }
+    .auth-right { width: 100%; }
+  }
+  @media (max-width: 640px) {
+    .sidebar { width: 200px; }
+    .main-content { margin-left: 200px; }
+    .sidebar-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ LOGIN ═══════════════════════════════ -->
+<div class="screen active" id="screen-login">
+  <div class="auth-wrap">
+    <div class="auth-left">
+      <div>
+        <div class="wordmark">GROUNDWORK</div>
+        <div class="tagline">know the world. change it.</div>
+      </div>
+      <div class="auth-left-middle">
+        <h2>THE <span>UNFILTERED</span><br>WORLD — IN<br>YOUR HANDS.</h2>
+        <div class="auth-pillars">
+          <div class="pillar"><span class="pillar-dot"></span> Zero algorithmic bias. Human-ranked truth.</div>
+          <div class="pillar"><span class="pillar-dot"></span> AI fact-checking on every post.</div>
+          <div class="pillar"><span class="pillar-dot"></span> React → act. Not just scroll.</div>
+          <div class="pillar"><span class="pillar-dot"></span> Global issues, local impact.</div>
+        </div>
+      </div>
+      <div class="auth-footer-note">GROUNDWORK v1.0 — Built for Gen Z. Funded by no one with an agenda.</div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-form-box">
+        <h3>SIGN IN</h3>
+        <p>Don't have an account? <a onclick="showScreen('screen-signup')">Create one →</a></p>
+        <div class="auth-error" id="login-error">Invalid email or password.</div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••">
+        </div>
+        <button class="btn-primary" onclick="doLogin()">LOG IN</button>
+        <div class="auth-switch">No account? <a onclick="showScreen('screen-signup')">Sign up free</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SIGNUP ══════════════════════════════ -->
+<div class="screen" id="screen-signup">
+  <div class="auth-wrap">
+    <div class="auth-left">
+      <div>
+        <div class="wordmark">GROUNDWORK</div>
+        <div class="tagline">know the world. change it.</div>
+      </div>
+      <div class="auth-left-middle">
+        <h2>JOIN THE<br><span>INFORMED</span><br>GENERATION.</h2>
+        <div class="auth-pillars">
+          <div class="pillar"><span class="pillar-dot"></span> No ads, no sponsored posts.</div>
+          <div class="pillar"><span class="pillar-dot"></span> Chronological feed — no manipulation.</div>
+          <div class="pillar"><span class="pillar-dot"></span> Every claim is source-verified.</div>
+          <div class="pillar"><span class="pillar-dot"></span> Turn awareness into action.</div>
+        </div>
+      </div>
+      <div class="auth-footer-note">GROUNDWORK v1.0 — Built for Gen Z. Funded by no one with an agenda.</div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-form-box">
+        <h3>CREATE ACCOUNT</h3>
+        <p>Already have an account? <a onclick="showScreen('screen-login')">Sign in →</a></p>
+        <div class="auth-error" id="signup-error">Please fill in all fields.</div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="signup-name" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label>Handle</label>
+          <input type="text" id="signup-handle" placeholder="@yourhandle">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="signup-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signup-password" placeholder="At least 6 characters">
+        </div>
+        <div class="form-group">
+          <label>Interests (pick your focus)</label>
+          <select id="signup-interest">
+            <option value="">Select a primary topic</option>
+            <option>Climate & Environment</option>
+            <option>Human Rights</option>
+            <option>Economic Policy</option>
+            <option>Immigration</option>
+            <option>Technology & AI Policy</option>
+            <option>Global Conflict</option>
+            <option>Public Health</option>
+            <option>All Topics</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="doSignup()">CREATE ACCOUNT</button>
+        <div class="auth-switch">Already a member? <a onclick="showScreen('screen-login')">Sign in</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ MAIN APP ════════════════════════════ -->
+<div class="screen" id="screen-app">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">GROUNDWORK<span>know the world</span></div>
+      <div class="sidebar-nav">
+        <div class="nav-item active" onclick="setView('feed')" id="nav-feed">
+          <span class="nav-icon">⊞</span> Feed
+        </div>
+        <div class="nav-item" onclick="setView('explore')" id="nav-explore">
+          <span class="nav-icon">◎</span> Explore
+        </div>
+        <div class="nav-item" onclick="setView('profile')" id="nav-profile">
+          <span class="nav-icon">◯</span> Profile
+        </div>
+        <div class="nav-item" onclick="setView('bookmarks')" id="nav-bookmarks">
+          <span class="nav-icon">◻</span> Saved
+        </div>
+        <div style="margin-top:auto"></div>
+        <div class="nav-item" onclick="doLogout()" style="margin-top:20px; color:var(--accent2);">
+          <span class="nav-icon">←</span> Log out
+        </div>
+      </div>
+      <div class="sidebar-user" onclick="setView('profile')">
+        <div class="user-avatar" id="sidebar-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-name">—</div>
+          <div class="user-handle" id="sidebar-handle">@—</div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <div class="feed-col">
+
+        <!-- FEED VIEW -->
+        <div id="view-feed">
+          <div class="feed-header">
+            <h1>FEED</h1>
+            <div class="feed-tabs">
+              <button class="feed-tab active" onclick="switchTab('latest',this)">Latest</button>
+              <button class="feed-tab" onclick="switchTab('top',this)">Top</button>
+              <button class="feed-tab" onclick="switchTab('action',this)">Action</button>
+            </div>
+          </div>
+          <div class="tag-filter" id="tag-filter">
+            <button class="tag-pill active" onclick="filterTag('All',this)" style="background:var(--accent);color:#0a0a0a;">All</button>
+            <button class="tag-pill" onclick="filterTag('Climate',this)" style="--tc:#22c55e;">Climate</button>
+            <button class="tag-pill" onclick="filterTag('Human Rights',this)" style="--tc:#f59e0b;">Human Rights</button>
+            <button class="tag-pill" onclick="filterTag('Economy',this)" style="--tc:#3b82f6;">Economy</button>
+            <button class="tag-pill" onclick="filterTag('Conflict',this)" style="--tc:#ef4444;">Conflict</button>
+            <button class="tag-pill" onclick="filterTag('Health',this)" style="--tc:#a855f7;">Health</button>
+            <button class="tag-pill" onclick="filterTag('Technology',this)" style="--tc:#06b6d4;">Technology</button>
+            <button class="tag-pill" onclick="filterTag('Immigration',this)" style="--tc:#f97316;">Immigration</button>
+          </div>
+
+          <!-- COMPOSER -->
+          <div class="composer-wrap">
+            <div class="composer-tabs">
+              <button class="composer-tab active" onclick="setComposerType('image',this)">📷 Image Post</button>
+              <button class="composer-tab" onclick="setComposerType('video',this)">▶ Video Post</button>
+            </div>
+            <div class="composer-inner">
+              <div class="post-avatar" id="composer-avatar" style="background:var(--accent);color:#0a0a0a;">?</div>
+              <div class="composer-right">
+                <textarea class="composer-input" id="composer-text" placeholder="What's happening? Share a policy update, issue, or on-the-ground report…" rows="3"></textarea>
+                <div class="composer-footer">
+                  <input class="composer-source" id="composer-source" placeholder="Source URL or publication name (required)">
+                  <button class="post-btn" onclick="submitPost()">POST</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- POSTS -->
+          <div id="posts-container"></div>
+        </div>
+
+        <!-- EXPLORE VIEW -->
+        <div id="view-explore" style="display:none;">
+          <div class="feed-header">
+            <h1>EXPLORE</h1>
+            <div style="font-family:var(--font-mono);font-size:12px;color:var(--muted);">Chronological · No algorithm</div>
+          </div>
+          <div style="padding:16px 24px;border-bottom:1px solid var(--border);">
+            <input style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--font-mono);font-size:13px;padding:10px 14px;border-radius:6px;outline:none;" placeholder="Search topics, issues, sources…" id="explore-search" oninput="doSearch(this.value)">
+          </div>
+          <div id="explore-results"></div>
+          <div class="explore-grid" id="explore-grid"></div>
+        </div>
+
+        <!-- PROFILE VIEW -->
+        <div id="view-profile" style="display:none;">
+          <div class="profile-header-banner">
+            <div class="profile-avatar-lg" id="profile-avatar-lg">?</div>
+          </div>
+          <div class="profile-info">
+            <div class="profile-name" id="profile-name">—</div>
+            <div class="profile-handle" id="profile-handle">@—</div>
+            <div class="profile-bio">Staying informed. Demanding better.</div>
+            <div class="profile-stats">
+              <div class="profile-stat">
+                <div class="profile-stat-num" id="profile-post-count">0</div>
+                <div class="profile-stat-label">Posts</div>
+              </div>
+              <div class="profile-stat">
+                <div class="profile-stat-num">142</div>
+                <div class="profile-stat-label">Following</div>
+              </div>
+              <div class="profile-stat">
+                <div class="profile-stat-num">88</div>
+                <div class="profile-stat-label">Followers</div>
+              </div>
+            </div>
+          </div>
+          <div id="profile-posts"></div>
+        </div>
+
+        <!-- SAVED VIEW -->
+        <div id="view-bookmarks" style="display:none;">
+          <div class="feed-header"><h1>SAVED</h1></div>
+          <div id="bookmarks-container"></div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <div class="sidebar-right">
+        <div class="widget-box">
+          <div class="ai-badge">⚡ AI Engine</div>
+          <div class="widget-title">BIAS METER</div>
+          <p style="font-size:12px;color:var(--muted2);font-family:var(--font-mono);margin-bottom:12px;">Your feed balance today</p>
+          <div class="bias-meter">
+            <div class="bias-track">
+              <div class="bias-needle" id="bias-needle" style="left:52%"></div>
+            </div>
+            <div class="bias-labels"><span>Left</span><span>Centre</span><span>Right</span></div>
+          </div>
+          <p style="margin-top:10px;font-size:11px;color:var(--muted);font-family:var(--font-mono);">Roughly balanced. Groundwork ensures no single viewpoint dominates your feed.</p>
+        </div>
+        <div class="widget-box">
+          <div class="widget-title">TRENDING</div>
+          <div id="trending-list"></div>
+        </div>
+        <div class="widget-box">
+          <div class="widget-title">TAKE ACTION</div>
+          <p style="font-size:12px;color:var(--muted2);font-family:var(--font-mono);margin-bottom:12px;">Open issues with live donation drives</p>
+          <div id="action-widget"></div>
+        </div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;line-height:1.8;padding:0 4px;">
+          No ads · No sponsors · No bias<br>
+          © 2025 GROUNDWORK
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ MODALS ══════════════════ -->
+
+<!-- FACT CHECK MODAL -->
+<div class="modal-overlay" id="modal-factcheck">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">FACT CHECK</div>
+      <div class="modal-close" onclick="closeModal('modal-factcheck')">✕</div>
+    </div>
+    <div class="ai-badge">⚡ Powered by Groundwork AI</div>
+    <div id="fc-content"></div>
+    <button class="fc-analyze-btn" id="fc-btn" onclick="runFactCheck()">
+      <div class="spinner" id="fc-spinner"></div>
+      <span id="fc-btn-text">Re-analyze this post</span>
+    </button>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="modal-share">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">SHARE POST</div>
+      <div class="modal-close" onclick="closeModal('modal-share')">✕</div>
+    </div>
+    <div class="share-grid">
+      <div class="share-option" onclick="shareVia('Twitter/X')"><div class="share-option-icon">✖</div><div class="share-option-label">Twitter/X</div></div>
+      <div class="share-option" onclick="shareVia('Instagram')"><div class="share-option-icon">◎</div><div class="share-option-label">Instagram</div></div>
+      <div class="share-option" onclick="shareVia('TikTok')"><div class="share-option-icon">♪</div><div class="share-option-label">TikTok</div></div>
+      <div class="share-option" onclick="shareVia('Threads')"><div class="share-option-icon">∞</div><div class="share-option-label">Threads</div></div>
+      <div class="share-option" onclick="shareVia('WhatsApp')"><div class="share-option-icon">◉</div><div class="share-option-label">WhatsApp</div></div>
+      <div class="share-option" onclick="shareVia('LinkedIn')"><div class="share-option-icon">in</div><div class="share-option-label">LinkedIn</div></div>
+    </div>
+    <div class="share-link-row">
+      <input class="share-link-input" id="share-link-val" readonly value="https://groundwork.app/post/...">
+      <button class="copy-btn" onclick="copyShareLink()">COPY</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMMENTS MODAL -->
+<div class="modal-overlay" id="modal-comments">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-header">
+      <div class="modal-title">COMMENTS</div>
+      <div class="modal-close" onclick="closeModal('modal-comments')">✕</div>
+    </div>
+    <div style="background:rgba(71,184,255,0.06);border:1px solid rgba(71,184,255,0.15);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;font-family:var(--font-mono);color:var(--accent3);">
+      ◈ Comments are for adding context only. Reactions to comments are disabled to reduce tribalism.
+    </div>
+    <div class="comment-input-row">
+      <div class="comment-avatar" id="modal-comment-avatar">?</div>
+      <input class="comment-input" id="modal-comment-input" placeholder="Add context or a source…" onkeydown="if(event.key==='Enter')submitComment()">
+      <button class="comment-send" onclick="submitComment()">POST</button>
+    </div>
+    <div id="modal-comments-list"></div>
+  </div>
+</div>
+
+<!-- ACTION/DONATE MODAL -->
+<div class="modal-overlay" id="modal-action">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-title" id="action-modal-title">TAKE ACTION</div>
+      <div class="modal-close" onclick="closeModal('modal-action')">✕</div>
+    </div>
+    <div id="action-modal-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let currentUser = null;
+let currentPostType = 'image';
+let activeTag = 'All';
+let currentFCPost = null;
+let currentSharePost = null;
+let currentCommentPost = null;
+let bookmarks = [];
+
+const users = [
+  { email: 'demo@groundwork.app', password: 'demo123', name: 'Alex Chen', handle: 'alexchen', interest: 'Climate & Environment' }
+];
+
+const TAG_COLORS = {
+  'Climate':     { bg:'#14532d', text:'#4ade80', pill:'#22c55e' },
+  'Human Rights':{ bg:'#451a03', text:'#fbbf24', pill:'#f59e0b' },
+  'Economy':     { bg:'#1e3a5f', text:'#60a5fa', pill:'#3b82f6' },
+  'Conflict':    { bg:'#450a0a', text:'#f87171', pill:'#ef4444' },
+  'Health':      { bg:'#3b0764', text:'#c084fc', pill:'#a855f7' },
+  'Technology':  { bg:'#082f49', text:'#22d3ee', pill:'#06b6d4' },
+  'Immigration': { bg:'#431407', text:'#fb923c', pill:'#f97316' },
+};
+
+const POSTS = [
+  {
+    id: 1, type: 'image',
+    author: { name: 'Aiko Reyes', handle: 'aikoreyes', initials: 'AR', color: '#22c55e' },
+    content: 'The Pacific Northwest drought of 2024 displaced over 40,000 farming families. Water rights legislation has now stalled in Congress for the 3rd consecutive year — a pattern advocates call "deliberate inaction."',
+    source: 'Reuters / USDA Agricultural Report 2024', sourceUrl: 'https://reuters.com',
+    tag: 'Climate', imageLabel: 'DROUGHT CRISIS', imageBg: '#0a1f10',
+    time: '2h ago', likes: 2847, comments: [], shares: 891,
+    factCheck: { status: 'verified', label: 'Verified', note: 'All key claims cross-referenced with USDA drought reports, Reuters field reporting, and Congressional Record data.', sources: ['USDA Drought Monitor Q4 2024', 'Reuters Field Report: Pacific NW', 'Senate Water Rights Committee Record'] },
+    actionType: 'donate', actionLabel: 'Support Displaced Farmers', actionOrg: 'Farm Aid', actionNote: 'Contributions go directly to displaced farming families in OR, WA, ID.',
+    bookmarked: false
+  },
+  {
+    id: 2, type: 'video',
+    author: { name: 'Dara Okafor', handle: 'daraokafor', initials: 'DO', color: '#f59e0b' },
+    content: 'BREAKING: The UN Special Rapporteur released a 280-page report documenting systematic press freedom violations across 14 governments in 2024, including democracies. 73 journalists remain detained without trial.',
+    source: 'UN Human Rights Office – Special Report 2024', sourceUrl: 'https://ohchr.org',
+    tag: 'Human Rights', imageLabel: 'PRESS FREEDOM', imageBg: '#1f1200',
+    time: '4h ago', likes: 5120, comments: [
+      { author: 'Mei Zhou', initials: 'MZ', time: '3h ago', text: 'Important to note this also includes EU member states. The Hungary and Poland situations are buried in footnote 44.' },
+      { author: 'Jordan Wells', initials: 'JW', time: '2h ago', text: 'The full 280-page report is available on OHCHR\'s website. Recommend reading the methodology section.' }
+    ], shares: 2341, videoDuration: '4:12',
+    factCheck: { status: 'verified', label: 'Verified', note: 'Report exists and figures match. Summary is accurate to the UN document.', sources: ['UN OHCHR Special Report 2024', 'Committee to Protect Journalists Annual Report'] },
+    actionType: 'steps', actionLabel: 'Next Steps', actionOrg: 'Reporters Without Borders',
+    actionNote: 'Sign the open letter. Contact your representative. Share this report.',
+    bookmarked: false
+  },
+  {
+    id: 3, type: 'image',
+    author: { name: 'Zara Patel', handle: 'zarapatel', initials: 'ZP', color: '#3b82f6' },
+    content: 'The IMF\'s October 2024 World Economic Outlook projects 43 low-income nations will spend more on debt servicing than on healthcare and education combined through 2026. This is not a future scenario — it\'s happening now.',
+    source: 'IMF World Economic Outlook, Oct 2024', sourceUrl: 'https://imf.org',
+    tag: 'Economy', imageLabel: 'DEBT CRISIS', imageBg: '#0a0f2a',
+    time: '6h ago', likes: 3901, comments: [
+      { author: 'Sam Torres', initials: 'ST', time: '5h ago', text: 'Worth adding: the IMF\'s own structural adjustment programs contributed to this. The report acknowledges this on p.87.' }
+    ], shares: 1654,
+    factCheck: { status: 'partial', label: 'Partially Verified', note: 'The IMF report exists and the projection is real. "43 nations" is accurate; however "more than healthcare AND education combined" applies to 31 of the 43. Minor overstatement.', sources: ['IMF WEO October 2024 – Chapter 2', 'World Bank Debt Sustainability Analysis'] },
+    actionType: 'steps', actionLabel: 'Take Action', actionOrg: 'Jubilee Debt Campaign',
+    actionNote: 'Sign the debt cancellation petition. Write to your treasury representative.',
+    bookmarked: false
+  },
+  {
+    id: 4, type: 'image',
+    author: { name: 'Tomás Guerra', handle: 'tomasguerra', initials: 'TG', color: '#ef4444' },
+    content: 'Sudan\'s conflict has now created the world\'s largest internal displacement crisis. 10.8 million people displaced within Sudan alone since April 2023. International media coverage has dropped 84% since month 3 of the conflict.',
+    source: 'UNHCR Situation Report #31 / Reuters Media Analysis', sourceUrl: 'https://unhcr.org',
+    tag: 'Conflict', imageLabel: 'SUDAN CRISIS', imageBg: '#1f0505',
+    time: '1d ago', likes: 8220, comments: [], shares: 4100,
+    factCheck: { status: 'verified', label: 'Verified', note: 'Displacement figures match UNHCR data. Media coverage analysis is sourced from Reuters Institute media tracking.', sources: ['UNHCR Sudan Situation Report #31', 'Reuters Institute Media Coverage Tracker', 'UN OCHA Sudan Emergency Brief'] },
+    actionType: 'donate', actionLabel: 'Donate to Sudan Relief', actionOrg: 'UNHCR Sudan Emergency',
+    actionNote: '100% of emergency donations go to shelter, food, and medical care in Sudan.',
+    bookmarked: false
+  },
+  {
+    id: 5, type: 'video',
+    author: { name: 'Priya Singh', handle: 'priyasingh', initials: 'PS', color: '#a855f7' },
+    content: 'WHO data: antimicrobial resistance (AMR) is now responsible for 1.27 million deaths annually — more than HIV/AIDS or malaria. New antibiotic development has nearly halted due to market failures. This is a silent pandemic.',
+    source: 'WHO Global AMR Report 2024 / The Lancet', sourceUrl: 'https://who.int',
+    tag: 'Health', imageLabel: 'SILENT PANDEMIC', imageBg: '#1a0a2e',
+    time: '1d ago', likes: 4450, comments: [], shares: 2200, videoDuration: '6:38',
+    factCheck: { status: 'verified', label: 'Verified', note: 'WHO figures confirmed. Lancet 2022 study provides the primary mortality attribution data. All claims accurate.', sources: ['WHO AMR Report 2024', 'The Lancet: Global burden of AMR 2022'] },
+    actionType: 'steps', actionLabel: 'Learn & Act', actionOrg: 'WHO AMR Action',
+    actionNote: 'Reduce unnecessary antibiotic use. Support PASTEUR Act research funding.',
+    bookmarked: false
+  },
+  {
+    id: 6, type: 'image',
+    author: { name: 'Leo Nakamura', handle: 'leonakamura', initials: 'LN', color: '#06b6d4' },
+    content: 'The EU\'s AI Act entered force Aug 2024. It mandates "high-risk" AI systems in hiring, credit, and law enforcement face conformity assessments — but enforcement mechanisms are still being debated. Who watches the watchmen?',
+    source: 'European Parliament / EU Official Journal', sourceUrl: 'https://europarl.europa.eu',
+    tag: 'Technology', imageLabel: 'EU AI ACT', imageBg: '#03151f',
+    time: '2d ago', likes: 3100, comments: [], shares: 1800,
+    factCheck: { status: 'verified', label: 'Verified', note: 'EU AI Act timeline confirmed. "High-risk" classifications accurate. Enforcement gap acknowledged in EU Commission own transition documents.', sources: ['EU Official Journal – AI Act 2024', 'European Parliament Research Service Brief'] },
+    actionType: 'steps', actionLabel: 'Know Your Rights', actionOrg: 'Algorithm Watch',
+    actionNote: 'Check if AI systems are being used to assess you. Report violations to your national data authority.',
+    bookmarked: false
+  }
+];
+
+let posts = POSTS.map(p => ({...p, comments: p.comments ? [...p.comments] : []}));
+const trending = [
+  { tag: 'Climate', label: 'Pacific Drought: Year 3', count: '14.2k posts', color: '#22c55e' },
+  { tag: 'Conflict', label: 'Sudan Displacement Crisis', count: '9.8k posts', color: '#ef4444' },
+  { tag: 'Human Rights', label: 'UN Press Freedom Report', count: '7.1k posts', color: '#f59e0b' },
+  { tag: 'Health', label: 'AMR Silent Pandemic', count: '5.5k posts', color: '#a855f7' },
+  { tag: 'Economy', label: 'Global Debt Spiral', count: '4.2k posts', color: '#3b82f6' },
+];
+const exploreTopics = [
+  { label: 'CLIMATE', count: '14.2k posts', bg: '#0a1f10', tag: 'Climate' },
+  { label: 'HUMAN RIGHTS', count: '9.1k posts', bg: '#1f1200', tag: 'Human Rights' },
+  { label: 'ECONOMY', count: '7.8k posts', bg: '#0a0f2a', tag: 'Economy' },
+  { label: 'CONFLICT', count: '12.3k posts', bg: '#1f0505', tag: 'Conflict' },
+  { label: 'HEALTH', count: '5.5k posts', bg: '#1a0a2e', tag: 'Health' },
+  { label: 'TECHNOLOGY', count: '4.2k posts', bg: '#03151f', tag: 'Technology' },
+];
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  const err   = document.getElementById('login-error');
+  if (!email || !pass) { err.textContent='Please fill in all fields.'; err.classList.add('show'); return; }
+  const user = users.find(u => u.email === email && u.password === pass);
+  if (!user) { err.textContent='Invalid email or password.'; err.classList.add('show'); return; }
+  err.classList.remove('show');
+  currentUser = user;
+  initApp();
+}
+
+function doSignup() {
+  const name   = document.getElementById('signup-name').value.trim();
+  const handle = document.getElementById('signup-handle').value.trim().replace('@','');
+  const email  = document.getElementById('signup-email').value.trim();
+  const pass   = document.getElementById('signup-password').value;
+  const inter  = document.getElementById('signup-interest').value;
+  const err    = document.getElementById('signup-error');
+  if (!name||!handle||!email||!pass) { err.textContent='Please fill in all fields.'; err.classList.add('show'); return; }
+  if (pass.length < 6) { err.textContent='Password must be at least 6 characters.'; err.classList.add('show'); return; }
+  err.classList.remove('show');
+  const user = { email, password: pass, name, handle, interest: inter || 'All Topics' };
+  users.push(user);
+  currentUser = user;
+  initApp();
+}
+
+function doLogout() {
+  currentUser = null;
+  showScreen('screen-login');
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+}
+
+// ══════════════════════════════════════════════
+//  APP INIT
+// ══════════════════════════════════════════════
+function initApp() {
+  showScreen('screen-app');
+  const initials = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('sidebar-avatar').textContent = initials;
+  document.getElementById('sidebar-name').textContent = currentUser.name;
+  document.getElementById('sidebar-handle').textContent = '@' + currentUser.handle;
+  document.getElementById('composer-avatar').textContent = initials;
+  document.getElementById('modal-comment-avatar').textContent = initials;
+  document.getElementById('profile-avatar-lg').textContent = initials;
+  document.getElementById('profile-name').textContent = currentUser.name;
+  document.getElementById('profile-handle').textContent = '@' + currentUser.handle;
+  renderPosts();
+  renderTrending();
+  renderExplore();
+  renderActionWidget();
+}
+
+// ══════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════
+function setView(view) {
+  ['feed','explore','profile','bookmarks'].forEach(v => {
+    document.getElementById('view-'+v).style.display = v===view ? 'block' : 'none';
+    const nav = document.getElementById('nav-'+v);
+    if (nav) nav.classList.toggle('active', v===view);
+  });
+  if (view==='profile') renderProfilePosts();
+  if (view==='bookmarks') renderBookmarks();
+}
+
+// ══════════════════════════════════════════════
+//  POSTS RENDERING
+// ══════════════════════════════════════════════
+function renderPosts(filterTag='All') {
+  const container = document.getElementById('posts-container');
+  let filtered = filterTag==='All' ? posts : posts.filter(p=>p.tag===filterTag);
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state"><div class="big">NONE</div>No posts in this category yet.</div>`;
+    return;
+  }
+  container.innerHTML = filtered.map((p,i) => buildPostHTML(p, i*60)).join('');
+}
+
+function buildPostHTML(p, delay=0) {
+  const tc = TAG_COLORS[p.tag] || { bg:'#111', text:'#ccc', pill:'#888' };
+  const isLiked = p.liked || false;
+  const isBm    = p.bookmarked || false;
+  const mediaHTML = p.type==='video'
+    ? `<div class="post-video" onclick="showToast('Video playback coming soon!')">
+        <div class="video-play">▶</div>
+        <div class="video-duration">${p.videoDuration||'2:30'}</div>
+       </div>`
+    : `<div class="post-image" style="background:${p.imageBg||'#111'};">
+        <div class="post-image-label">${p.imageLabel||p.tag.toUpperCase()}</div>
+       </div>`;
+  const actionColor = p.actionType==='donate' ? 'donate' : '';
+  const actionIcon  = p.actionType==='donate' ? '💚' : '→';
+  return `
+  <div class="post-card" id="post-${p.id}" style="animation-delay:${delay}ms">
+    <div class="post-header">
+      <div class="post-avatar" style="background:${p.author.color||'var(--bg3)'}20;color:${p.author.color||'var(--muted2)'};" onclick="showToast('Viewing @${p.author.handle}')">
+        ${p.author.initials}
+      </div>
+      <div class="post-meta">
+        <div class="post-author-row">
+          <span class="post-name" onclick="showToast('Viewing @${p.author.handle}')">${p.author.name}</span>
+          <span class="verified-badge">✓ Sourced</span>
+          <span class="post-time">${p.time}</span>
+        </div>
+        <div style="margin-top:4px;">
+          <span class="post-tag" style="background:${tc.bg};color:${tc.text};">${p.tag}</span>
+        </div>
+      </div>
+    </div>
+    <div class="post-body">${p.content}</div>
+    ${mediaHTML}
+    <div class="source-bar">
+      <span class="source-icon">⊡</span>
+      <span style="color:var(--muted);">Source:</span>
+      <a class="source-link" onclick="showToast('Opening: ${p.source}')">${p.source}</a>
+    </div>
+    <div class="fact-check-bar ${p.factCheck.status}" onclick="openFactCheck(${p.id})">
+      <span class="fact-check-icon">${fcIcon(p.factCheck.status)}</span>
+      <span>${p.factCheck.label}</span>
+      <span style="margin-left:8px;font-size:10px;opacity:0.7;">${p.factCheck.note.slice(0,55)}…</span>
+      <span class="fact-check-note">View report →</span>
+    </div>
+    <div class="action-banner ${actionColor}" onclick="openAction(${p.id})">
+      <div class="action-text">
+        <strong>${actionIcon} ${p.actionLabel}</strong>
+        <span>${p.actionOrg}</span>
+      </div>
+      <button class="action-btn" onclick="event.stopPropagation();openAction(${p.id})">${p.actionType==='donate'?'DONATE':'NEXT STEPS'}</button>
+    </div>
+    <div class="post-actions">
+      <button class="action-btn-sm ${isLiked?'liked':''}" id="like-btn-${p.id}" onclick="toggleLike(${p.id})">
+        <svg viewBox="0 0 24 24" fill="${isLiked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="like-count-anim" id="like-count-${p.id}">${fmtNum(p.likes)}</span>
+      </button>
+      <button class="action-btn-sm" onclick="openComments(${p.id})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span id="comment-count-${p.id}">${p.comments.length}</span>
+      </button>
+      <div class="action-divider"></div>
+      <button class="action-btn-sm" onclick="toggleBookmark(${p.id})">
+        <svg viewBox="0 0 24 24" fill="${isBm?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span id="bm-label-${p.id}">${isBm?'Saved':'Save'}</span>
+      </button>
+      <button class="action-btn-sm share-btn-sm" onclick="openShare(${p.id})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        ${fmtNum(p.shares)}
+      </button>
+    </div>
+  </div>`;
+}
+
+function fcIcon(s) {
+  return { verified:'✔', partial:'◑', disputed:'✖', pending:'◎' }[s] || '?';
+}
+function fmtNum(n) {
+  if (n >= 1000) return (n/1000).toFixed(1).replace('.0','')+'k';
+  return n;
+}
+
+// ══════════════════════════════════════════════
+//  ACTIONS
+// ══════════════════════════════════════════════
+function toggleLike(id) {
+  const p = posts.find(x=>x.id===id); if (!p) return;
+  p.liked = !p.liked;
+  p.likes += p.liked ? 1 : -1;
+  const btn = document.getElementById('like-btn-'+id);
+  const cnt = document.getElementById('like-count-'+id);
+  if (btn) { btn.classList.toggle('liked', p.liked); btn.querySelector('svg').setAttribute('fill', p.liked?'currentColor':'none'); }
+  if (cnt) {
+    cnt.textContent = fmtNum(p.likes);
+    cnt.classList.remove('bump');
+    void cnt.offsetWidth;
+    cnt.classList.add('bump');
+  }
+}
+
+function toggleBookmark(id) {
+  const p = posts.find(x=>x.id===id); if (!p) return;
+  p.bookmarked = !p.bookmarked;
+  const lbl = document.getElementById('bm-label-'+id);
+  if (lbl) lbl.textContent = p.bookmarked ? 'Saved' : 'Save';
+  const btn = lbl?.closest('.action-btn-sm');
+  if (btn) btn.querySelector('svg').setAttribute('fill', p.bookmarked?'currentColor':'none');
+  showToast(p.bookmarked ? '📌 Post saved!' : 'Removed from saved', p.bookmarked?'success':'');
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.feed-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const sorted = [...posts];
+  if (tab==='top') sorted.sort((a,b)=>b.likes-a.likes);
+  else if (tab==='action') { renderPosts(activeTag); return; }
+  const container = document.getElementById('posts-container');
+  container.innerHTML = (activeTag==='All'?sorted:sorted.filter(p=>p.tag===activeTag)).map((p,i)=>buildPostHTML(p,i*60)).join('');
+}
+
+function filterTag(tag, el) {
+  activeTag = tag;
+  document.querySelectorAll('.tag-pill').forEach(p=>{
+    p.classList.remove('active');
+    p.style.background=''; p.style.color='';
+  });
+  el.classList.add('active');
+  const tc = TAG_COLORS[tag];
+  if (tc) { el.style.background=tc.pill; el.style.color='#fff'; }
+  else { el.style.background='var(--accent)'; el.style.color='#0a0a0a'; }
+  renderPosts(tag);
+}
+
+function setComposerType(type, el) {
+  currentPostType = type;
+  document.querySelectorAll('.composer-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function submitPost() {
+  const text = document.getElementById('composer-text').value.trim();
+  const src  = document.getElementById('composer-source').value.trim();
+  if (!text) { showToast('Please write something!', 'error'); return; }
+  if (!src)  { showToast('A source is required for all posts.', 'error'); return; }
+  const initials = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const newPost = {
+    id: Date.now(), type: currentPostType,
+    author: { name: currentUser.name, handle: currentUser.handle, initials, color: '#e8ff47' },
+    content: text, source: src, sourceUrl: '#',
+    tag: 'Human Rights', imageLabel: 'NEW POST', imageBg: '#111',
+    time: 'just now', likes: 0, comments: [], shares: 0,
+    factCheck: { status: 'pending', label: 'Pending Review', note: 'This post is queued for AI fact-checking. Results available within 24h.', sources: [] },
+    actionType: 'steps', actionLabel: 'Discuss', actionOrg: 'Groundwork Community',
+    actionNote: 'Join the discussion and share with your network.',
+    bookmarked: false
+  };
+  posts.unshift(newPost);
+  document.getElementById('composer-text').value = '';
+  document.getElementById('composer-source').value = '';
+  renderPosts(activeTag);
+  showToast('✓ Post submitted for fact-check review', 'success');
+}
+
+// ══════════════════════════════════════════════
+//  FACT CHECK MODAL
+// ══════════════════════════════════════════════
+function openFactCheck(id) {
+  currentFCPost = posts.find(x=>x.id===id);
+  if (!currentFCPost) return;
+  renderFCContent(currentFCPost.factCheck);
+  openModal('modal-factcheck');
+}
+
+function renderFCContent(fc) {
+  const srcHTML = fc.sources && fc.sources.length
+    ? `<div class="fc-sources">${fc.sources.map(s=>`<div class="fc-source-item">↗ ${s}</div>`).join('')}</div>`
+    : '';
+  document.getElementById('fc-content').innerHTML = `
+    <div class="ai-badge" style="margin-bottom:16px;">⚡ Last analyzed: ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+    <div class="fc-result ${fc.status}">
+      <div class="fc-status">${fc.label.toUpperCase()}</div>
+      <div class="fc-note">${fc.note}</div>
+      ${srcHTML}
+    </div>`;
+}
+
+function runFactCheck() {
+  const btn = document.getElementById('fc-btn');
+  const spinner = document.getElementById('fc-spinner');
+  const btnText = document.getElementById('fc-btn-text');
+  spinner.style.display = 'inline-block';
+  btnText.textContent = 'Analyzing…';
+  btn.disabled = true;
+  setTimeout(() => {
+    spinner.style.display = 'none';
+    btnText.textContent = 'Re-analyze this post';
+    btn.disabled = false;
+    if (currentFCPost) renderFCContent(currentFCPost.factCheck);
+    showToast('✓ Fact-check complete', 'success');
+  }, 2200);
+}
+
+// ══════════════════════════════════════════════
+//  SHARE MODAL
+// ══════════════════════════════════════════════
+function openShare(id) {
+  currentSharePost = posts.find(x=>x.id===id);
+  document.getElementById('share-link-val').value = `https://groundwork.app/post/${id}`;
+  openModal('modal-share');
+}
+
+function shareVia(platform) {
+  closeModal('modal-share');
+  showToast(`Sharing to ${platform}…`, 'success');
+}
+
+function copyShareLink() {
+  const val = document.getElementById('share-link-val').value;
+  navigator.clipboard.writeText(val).then(()=>{
+    showToast('✓ Link copied!', 'success');
+  }).catch(()=>{
+    showToast('✓ Link copied!', 'success');
+  });
+  closeModal('modal-share');
+}
+
+// ══════════════════════════════════════════════
+//  COMMENTS MODAL
+// ══════════════════════════════════════════════
+function openComments(id) {
+  currentCommentPost = posts.find(x=>x.id===id);
+  if (!currentCommentPost) return;
+  renderComments();
+  openModal('modal-comments');
+}
+
+function renderComments() {
+  const list = document.getElementById('modal-comments-list');
+  if (!currentCommentPost.comments.length) {
+    list.innerHTML = `<div class="empty-state" style="padding:30px 0;"><div style="font-family:var(--font-display);font-size:24px;color:var(--border2);margin-bottom:8px;">NO COMMENTS</div>Be the first to add context.</div>`;
+    return;
+  }
+  list.innerHTML = currentCommentPost.comments.map(c=>`
+    <div class="comment">
+      <div class="comment-avatar">${c.initials}</div>
+      <div class="comment-body">
+        <div class="comment-author">${c.author}<span>${c.time}</span></div>
+        <div class="comment-text">${c.text}</div>
+      </div>
+    </div>`).join('');
+}
+
+function submitComment() {
+  const input = document.getElementById('modal-comment-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const initials = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  currentCommentPost.comments.push({
+    author: currentUser.name, initials, time: 'just now', text
+  });
+  input.value = '';
+  renderComments();
+  const cnt = document.getElementById('comment-count-'+currentCommentPost.id);
+  if (cnt) cnt.textContent = currentCommentPost.comments.length;
+  showToast('✓ Comment posted', 'success');
+}
+
+// ══════════════════════════════════════════════
+//  ACTION MODAL
+// ══════════════════════════════════════════════
+function openAction(id) {
+  const p = posts.find(x=>x.id===id); if (!p) return;
+  document.getElementById('action-modal-title').textContent = p.actionType==='donate' ? 'DONATE' : 'TAKE ACTION';
+  const color = p.actionType==='donate' ? 'var(--green)' : 'var(--accent3)';
+  document.getElementById('action-modal-body').innerHTML = `
+    <div style="margin-bottom:20px;">
+      <div style="font-family:var(--font-display);font-size:36px;letter-spacing:2px;color:${color};margin-bottom:8px;">${p.actionOrg}</div>
+      <div style="font-size:14px;color:var(--muted2);line-height:1.7;">${p.actionNote}</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Related to post</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.5;">${p.content.slice(0,120)}…</div>
+    </div>
+    ${p.actionType==='donate' ? `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
+        ${['$5','$10','$25','$50','$100','Custom'].map(a=>`
+          <button onclick="selectDonate(this,'${a}')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--font-display);font-size:20px;letter-spacing:1px;padding:12px;border-radius:6px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='${color}'" onmouseout="if(!this.classList.contains('sel'))this.style.borderColor='var(--border2)'">${a}</button>
+        `).join('')}
+      </div>
+      <button onclick="showToast('Thank you for your contribution! 💚','success');closeModal('modal-action');" style="width:100%;background:${color};color:#0a0a0a;border:none;font-family:var(--font-display);font-size:22px;letter-spacing:2px;padding:14px;border-radius:6px;cursor:pointer;">DONATE NOW</button>
+    ` : `
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button onclick="showToast('Opening petition…','success');closeModal('modal-action');" style="background:${color};color:#0a0a0a;border:none;font-family:var(--font-display);font-size:18px;letter-spacing:2px;padding:12px;border-radius:6px;cursor:pointer;">SIGN PETITION</button>
+        <button onclick="showToast('Opening contact tool…');closeModal('modal-action');" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--font-display);font-size:18px;letter-spacing:2px;padding:12px;border-radius:6px;cursor:pointer;">CONTACT YOUR REP</button>
+        <button onclick="openShare(${p.id});closeModal('modal-action');" style="background:transparent;border:1px solid var(--border2);color:var(--muted2);font-family:var(--font-display);font-size:18px;letter-spacing:2px;padding:12px;border-radius:6px;cursor:pointer;">SHARE THIS POST</button>
+      </div>
+    `}`;
+  openModal('modal-action');
+}
+
+function selectDonate(el, amt) {
+  document.querySelectorAll('#action-modal-body button').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  el.style.borderColor = 'var(--green)';
+  el.style.color = 'var(--green)';
+}
+
+// ══════════════════════════════════════════════
+//  EXPLORE
+// ══════════════════════════════════════════════
+function renderExplore() {
+  const grid = document.getElementById('explore-grid');
+  grid.innerHTML = exploreTopics.map(t=>`
+    <div class="explore-card" onclick="filterTag('${t.tag}',document.querySelector('.tag-pill'));setView('feed');" style="background:${t.bg};">
+      <div class="explore-card-inner">
+        <div>
+          <div class="explore-label">${t.label}</div>
+          <div class="explore-count">${t.count}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function doSearch(q) {
+  const res = document.getElementById('explore-results');
+  if (!q.trim()) { res.innerHTML=''; return; }
+  const matches = posts.filter(p=>
+    p.content.toLowerCase().includes(q.toLowerCase()) ||
+    p.tag.toLowerCase().includes(q.toLowerCase()) ||
+    p.author.name.toLowerCase().includes(q.toLowerCase())
+  );
+  if (!matches.length) {
+    res.innerHTML = `<div class="empty-state" style="padding:40px 24px;"><div class="big">0</div>No posts matching "${q}"</div>`;
+    return;
+  }
+  res.innerHTML = `<div style="padding:12px 24px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:12px;color:var(--muted);">${matches.length} result${matches.length!==1?'s':''} for "${q}"</div>`
+    + matches.map(p=>buildPostHTML(p)).join('');
+}
+
+// ══════════════════════════════════════════════
+//  TRENDING & ACTION WIDGET
+// ══════════════════════════════════════════════
+function renderTrending() {
+  document.getElementById('trending-list').innerHTML = trending.map(t=>`
+    <div class="trending-item" onclick="filterTag('${t.tag}',document.querySelector('.tag-pill'));setView('feed');">
+      <div class="trending-tag" style="color:${t.color};">${t.tag}</div>
+      <div class="trending-label">${t.label}</div>
+      <div class="trending-count">${t.count}</div>
+    </div>`).join('');
+}
+
+function renderActionWidget() {
+  const donatePosts = posts.filter(p=>p.actionType==='donate').slice(0,2);
+  document.getElementById('action-widget').innerHTML = donatePosts.map(p=>`
+    <div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openAction(${p.id})">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;line-height:1.4;">${p.actionLabel}</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);">${p.actionOrg}</div>
+      <div style="margin-top:6px;background:var(--green);color:#0a0a0a;display:inline-block;font-family:var(--font-display);font-size:12px;letter-spacing:1px;padding:3px 10px;border-radius:3px;cursor:pointer;">DONATE</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  PROFILE & BOOKMARKS
+// ══════════════════════════════════════════════
+function renderProfilePosts() {
+  const initials = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const myPosts = posts.filter(p=>p.author.handle===currentUser.handle);
+  document.getElementById('profile-post-count').textContent = myPosts.length;
+  const container = document.getElementById('profile-posts');
+  if (!myPosts.length) {
+    container.innerHTML = `<div class="empty-state"><div class="big">0</div>You haven't posted yet.<br>Share your first post from the feed.</div>`;
+    return;
+  }
+  container.innerHTML = myPosts.map((p,i)=>buildPostHTML(p,i*60)).join('');
+}
+
+function renderBookmarks() {
+  const saved = posts.filter(p=>p.bookmarked);
+  const container = document.getElementById('bookmarks-container');
+  if (!saved.length) {
+    container.innerHTML = `<div class="empty-state"><div class="big">◻</div>No saved posts yet.<br>Save posts by tapping the bookmark icon.</div>`;
+    return;
+  }
+  container.innerHTML = saved.map((p,i)=>buildPostHTML(p,i*60)).join('');
+}
+
+// ══════════════════════════════════════════════
+//  MODAL HELPERS
+// ══════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ══════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════
+let toastTimer;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (type?' '+type:'');
+  void t.offsetWidth;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════════════
+//  BIAS NEEDLE ANIMATION
+// ══════════════════════════════════════════════
+setInterval(()=>{
+  const needle = document.getElementById('bias-needle');
+  if (needle) {
+    const base = 52, jitter = (Math.random()-0.5)*6;
+    needle.style.left = Math.max(30,Math.min(70,base+jitter))+'%';
+  }
+}, 4000);
+
+// ══════════════════════════════════════════════
+//  KEYBOARD
+// ══════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
+  }
+});
+
+// DEMO HINT
+setTimeout(()=>showToast('Tip: Try demo@groundwork.app / demo123 to log in'), 1000);
+</script>
+</body>
+</html>
